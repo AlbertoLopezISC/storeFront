@@ -1,0 +1,17 @@
+<div class="p-8 flex justify-center flex-col items-center gap-16">
+    @for (item of arrayItems; track $index) { 
+    <mat-card class="w-1/2">
+        <mat-card-header class="w-full">
+            <mat-card-title class="w-full">{{item.name}}</mat-card-title>
+            <mat-card-subtitle>{{item.id}}</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image class="p-4 image-width" [src]="item.imageUrl" [alt]="item.description">
+        <mat-card-content>
+            <p>{{item.description}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click)="addItemToCart(item)">Agregar</button>
+        </mat-card-actions>
+    </mat-card>
+}
+</div>
