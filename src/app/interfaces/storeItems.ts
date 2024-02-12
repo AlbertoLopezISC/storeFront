@@ -1,14 +1,28 @@
 export interface StoreItemsResponse {
-    data: StoreItem[];
+    count: number;
+    results: StoreItem[];
 }
 
 export interface StoreItem {
     id: number;
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-    stock: number;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    imgUrl: string;
+    stock: number
+}
+
+export interface CreateShoppingCartItem{
+    id?: number;
+    articuloId: number;
+    cantidad: number;
+    agregarFlag: boolean;
+}
+
+export interface ShoppingCartItem{
+    id: number;
+    articulo: StoreItem;
+    cantidad: number;
 }
 
 export interface Cart {

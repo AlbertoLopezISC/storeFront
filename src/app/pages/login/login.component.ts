@@ -27,7 +27,8 @@ export class LoginComponent implements OnInit{
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
-        localStorage.setItem('token', response.token);
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('userInfo', JSON.stringify(response.user));
         this.router.navigate(['/dashboard']);
       });
     }

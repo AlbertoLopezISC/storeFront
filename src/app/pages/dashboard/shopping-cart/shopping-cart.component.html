@@ -3,28 +3,17 @@
     <div class="flex justify-end">
         <button mat-raised-button (click)="clearCart()">Limpiar carrito</button>
     </div>
-    <div class="flex justify-center flex-col items-center gap-16">
-        <mat-card class="w-1/2" *ngFor="let item of shoppingCart | keyvalue">
-            <mat-card-header>
-                <mat-card-title>{{item.value.item.name}} SKU: {{item.value.item.id}}</mat-card-title>
-                <mat-card-subtitle>Articulos agregados: {{item.value.quantity}}</mat-card-subtitle>
-                <mat-card-subtitle>Subtotal: {{item.value.quantity * item.value.item.price | currency: 'USD' : 'symbol'
-                    : '1.2-2'}}</mat-card-subtitle>
-            </mat-card-header>
-            <img mat-card-image class="p-4 image-width" [src]="item.value.item.imageUrl"
-                [alt]="item.value.item.description">
-            <mat-card-content>
-                <p>{{item.value.item.description}}</p>
-            </mat-card-content>
-            <mat-card-actions>
-                <button mat-button (click)="addItemFromCart(item.key)">Agregar</button>
-                <button mat-button (click)="removeItemFromCart(item.key)">Eliminar</button>
-            </mat-card-actions>
-        </mat-card>
-        <hr class="bg-slate-500 h-1 w-full">
-        <div class="flex justify-center">
-            <h2>Total: {{totalBill() | currency: 'USD' : 'symbol' : '1.2-2'}}</h2>
-        </div>
+    <div class="grid grid-cols-3 justify-center items-center gap-16 pb-16">
+        @for (item of shoppingCart; track $index) {
+            <app-article-item [item]="item" (addItemCartEmitter)="addItemFromCart($event)" (removeItemCartEmitter)="removeItemFromCart(item, $index)"></app-article-item>
+        }
+    </div>
+    <hr class="bg-slate-500 h-1 w-full">
+    <div class="flex justify-center">
+        <h2>Total: {{totalBill() | currency: 'USD' : 'symbol' : '1.2-2'}}</h2>
+    </div>
+    <div>
+        <button mat-button (click)="buyShoppingCart()">Comprar carrito</button>
     </div>
     } @else {
     <div class="flex justify-center">

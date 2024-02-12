@@ -1,46 +1,95 @@
 import { Component, OnInit } from '@angular/core';
-import { Cart, ItemCart } from '../../../interfaces/storeItems';
+import { ShoppingCartItem } from '../../../interfaces/storeItems';
 import { StoreService } from '../../../services/store/store.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertComponent } from '../../../components/alert/alert.component';
 
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.scss'
 })
-export class ShoppingCartComponent implements OnInit{
-  shoppingCart: Cart = {};
+export class ShoppingCartComponent implements OnInit {
+  shoppingCart: ShoppingCartItem[] = [];
   totalItems: number = 0;
 
-  constructor(private storeService: StoreService) {
+  constructor(private storeService: StoreService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
     this.storeService.getCart().subscribe(cart => {
       this.shoppingCart = cart;
-      this.totalItems = Object.keys(this.shoppingCart).length;
+      this.totalItems = cart.reduce((count: number, item: ShoppingCartItem) => { return count + item.cantidad; }, 0);
     });
   }
 
-  removeItemFromCart(itemId: string): void {
-    if(this.shoppingCart[itemId].quantity > 1) {
-      this.shoppingCart[itemId].quantity--;
-    } else {
-      delete this.shoppingCart[itemId];
+  removeItemFromCart(item: ShoppingCartItem, i: number): void {
+    item.cantidad -= 1;
+    if(item.cantidad === 0) {
+      const i = this.shoppingCart.indexOf(item);
+      this.shoppingCart.splice(i, 1);
     }
+    this.storeService.updateItemToCart(item.articulo, 1, false, item.id).subscribe((response) => {
+      console.log(response);
+    });
   }
 
-  addItemFromCart(itemId: string): void {
-    this.shoppingCart[itemId].quantity++;
+  addItemFromCart(item: ShoppingCartItem): void {
+    item.cantidad += 1;
+    this.storeService.updateItemToCart(item.articulo, 1, true, item.id).subscribe((response) => {
+      console.log(response);
+    });
   }
 
   clearCart(): void {
-    this.shoppingCart = {};
-    this.totalItems = 0;
+    this.storeService.deleteShoppingCart().subscribe((response) => {
+      console.log(response);
+      this.shoppingCart = [];
+      this.totalItems = 0;
+    });
+  }
+
+  buyShoppingCart(): void {
+    this.dialog.open(AlertComponent, {
+      data: {
+        icon: "warning",
+        title: 'Confirmar compra',
+        message: '¿Está seguro que desea realizar la compra?',
+        showButtonCancel: true
+      }
+    }).afterClosed().subscribe((result) => {
+      if (result.status === 'confirm') {
+        this.storeService.buyShoppingCart().subscribe({
+          next: (response) => {
+            this.shoppingCart = [];
+            this.totalItems = 0;
+              this.dialog.open(AlertComponent, {
+                data: {
+                  icon: "success",
+                  title: 'Compra realizada',
+                  message: 'La compra se realizó correctamente',
+                }
+              });
+            
+          },
+          error: (error) => {
+            console.log(error);
+            this.dialog.open(AlertComponent, {
+              data: {
+                icon: "error",
+                title: 'Compra no realizada',
+                message: error.error.message || 'Ocurrió un error al realizar la compra'
+              }
+            });
+          }
+        });
+      }
+    });
   }
 
   totalBill(): number {
-    return Object.values(this.shoppingCart).reduce((count: number, item: ItemCart) => {
-      return count + (item.item.price * item.quantity);
+    return this.shoppingCart.reduce((count: number, item: ShoppingCartItem) => {
+      return count + (item.articulo.precio * item.cantidad);
     }, 0);
   }
 }

@@ -1,0 +1,20 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{item.articulo.nombre}} SKU: {{item.articulo.id}}</mat-card-title>
+        <mat-card-subtitle>Precio: {{item.articulo.precio | currency: 'USD' : 'symbol': '1.2-2'}}</mat-card-subtitle>
+        <mat-card-subtitle>Stock: {{item.articulo.stock}}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="item.id !== -1">Articulos agregados: {{item.cantidad}}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="item.id !== -1">Subtotal: {{item.cantidad * item.articulo.precio | currency: 'USD' : 'symbol'
+            : '1.2-2'}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image class="p-4 image-width" [src]="item.articulo.imgUrl" [alt]="item.articulo.descripcion">
+    <mat-card-content>
+        <p>{{item.articulo.descripcion}}</p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)="addItemFromCart(item)">Agregar</button>
+        @if(item.id !== -1){
+            <button mat-button (click)="removeItemFromCart(item)">Eliminar</button>
+        }
+    </mat-card-actions>
+</mat-card>
