@@ -5,14 +5,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertComponent } from './alert/alert.component';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({
-  declarations: [ArticleItemComponent, AlertComponent],
+  declarations: [ArticleItemComponent, AlertComponent, LoaderComponent],
   imports: [
-    CommonModule, MatCardModule, MatButtonModule, MatIconModule
+    CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule
   ],
-  exports: [ArticleItemComponent]
+  exports: [ArticleItemComponent, LoaderComponent]
 })
 export class ComponentsModule { }
