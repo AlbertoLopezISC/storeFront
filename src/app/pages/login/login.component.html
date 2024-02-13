@@ -17,7 +17,7 @@
                     </mat-form-field>
                     <mat-form-field class="w-full">
                         <mat-label>Contraseña</mat-label>
-                        <input matInput placeholder="Contraseña" formControlName="password" required>
+                        <input type="password" matInput placeholder="Contraseña" formControlName="password" required>
                         <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
                             Username es requirido
                         </mat-error>
