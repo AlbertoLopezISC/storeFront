@@ -11,7 +11,6 @@ import { AlertComponent } from '../../../components/alert/alert.component';
 })
 export class ShoppingCartComponent implements OnInit {
   shoppingCart: ShoppingCartItem[] = [];
-  totalItems: number = 0;
 
   constructor(private storeService: StoreService, private dialog: MatDialog) {
   }
@@ -19,7 +18,6 @@ export class ShoppingCartComponent implements OnInit {
   ngOnInit() {
     this.storeService.getCart().subscribe(cart => {
       this.shoppingCart = cart;
-      this.totalItems = cart.reduce((count: number, item: ShoppingCartItem) => { return count + item.cantidad; }, 0);
     });
   }
 
@@ -45,7 +43,6 @@ export class ShoppingCartComponent implements OnInit {
     this.storeService.deleteShoppingCart().subscribe((response) => {
       console.log(response);
       this.shoppingCart = [];
-      this.totalItems = 0;
     });
   }
 
@@ -62,7 +59,6 @@ export class ShoppingCartComponent implements OnInit {
         this.storeService.buyShoppingCart().subscribe({
           next: (response) => {
             this.shoppingCart = [];
-            this.totalItems = 0;
               this.dialog.open(AlertComponent, {
                 data: {
                   icon: "success",
